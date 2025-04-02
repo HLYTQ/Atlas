@@ -5,4 +5,7 @@ TAGS
 tmp/
 .vscode/*
 .cache/*
+.vs/*
 build/*
+out/*
+imgui.ini

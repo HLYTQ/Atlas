@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fmt/base.h>
+#include "spdlog/fmt/bundled/base.h"
 #include <functional>
 #include <string>
 

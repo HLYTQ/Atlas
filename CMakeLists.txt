@@ -31,14 +31,11 @@ if (NOT MSVC)
     endif()
 endif()
 
-if (MSVC)  # 1. fix string literial cannot include unicode characters; 2. rid min and max macros; 3. get back M_PI, M_E macros
-    add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/utf-8$<SEMICOLON>/DNOMINMAX$<SEMICOLON>/D_USE_MATH_DEFINES>)
-    add_compile_options($<$<COMPILE_LANG_AND_ID:C,MSVC>:/utf-8$<SEMICOLON>/DNOMINMAX$<SEMICOLON>/D_USE_MATH_DEFINES>)
-elseif (CMAKE_COMPILER_IS_GNUCXX)  # Add necessary checks and warnings
-    if (CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
-        add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wall$<SEMICOLON>-Wextra>)
-        add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,GNU>:-ftrapv$<SEMICOLON>-fbounds-check$<SEMICOLON>-fsanitize-trap>)
-    endif()
+if (MSVC)
+    # FUCKING VS2022
+    include_directories(${PROJECT_SOURCE_DIR}/vendor/glfw/include)
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/source-charset:utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/execution-charset:utf-8>")
 endif()
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.hpp)
@@ -47,6 +44,7 @@ add_executable(${PROJECT_NAME} ${sources} ${headers})
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/stb_image)
+include_directories(${PROJECT_SOURCE_DIR}/vendor/spdlog/include)
 
 add_subdirectory(${VENDOR_DIR}/glm)
 target_link_libraries(${PROJECT_NAME} PUBLIC glm)
@@ -59,8 +57,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glad)
 
 add_subdirectory(${VENDOR_DIR}/imgui)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
-
-add_subdirectory(${VENDOR_DIR}/spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DOPENGLTUTOR_HOME=\"${CMAKE_CURRENT_SOURCE_DIR}/\")

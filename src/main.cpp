@@ -16,7 +16,7 @@ public:
 };
 
 int main(void) {
-
+    Atlas::Application app;
     Atlas::Log::init();
     AT_CORE_WARN("Initlized Log");
     AT_INFO("Hello");

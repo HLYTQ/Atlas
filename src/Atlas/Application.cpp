@@ -47,8 +47,8 @@ void Application::Run() {
         }
         m_ImGuiLayer->End();
 
-        auto [x, y] = Input::GetMousePos();
-        AT_CORE_TRACE("{0}, {1}", x, y);
+        auto pos = Input::GetMousePosition();
+        AT_CORE_TRACE("{0}, {1}", pos.x, pos.y);
 
         m_Window->OnUpdate();
     }
