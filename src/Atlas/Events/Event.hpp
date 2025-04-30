@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 
-#include "Core.hpp"
+#include "atlaspch.hpp"
 
 namespace Atlas {
 
@@ -24,7 +24,8 @@ enum class EventType {
     MouseButtonPressed,
     MouseButtonReleased,
     MouseScrolled,
-    MouseMoved
+    MouseMoved,
+    FileDrop
 };
 
 enum EventCategory {
@@ -33,7 +34,8 @@ enum EventCategory {
     EventCategoryInput       = Bit(1),
     EventCategoryKeyboard    = Bit(2),
     EventCategoryMouse       = Bit(3),
-    EventCategoryMouseButton = Bit(4)
+    EventCategoryMouseButton = Bit(4),
+    EventCategoryFileDrop    = Bit(5)
 };
 
 #define EVENT_CLASS_TYPE(type)                        \

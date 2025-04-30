@@ -1,11 +1,7 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "Atlas/ImGui/ImGuiLayer.hpp"
 #include "Atlas/Application.hpp"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <imgui.h>
 
 
 namespace Atlas {
@@ -43,7 +39,7 @@ void ImGuiLayer::OnAttach() {
 
     SetDarkThemeColors();
 
-    Application& app = Application::Get();
+    Application& app   = Application::Get();
     GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
     // Setup Platform/Renderer bindings
@@ -67,17 +63,13 @@ void ImGuiLayer::OnEvent(Event& e) {
     }
 }
 
-
 void ImGuiLayer::Begin() {
-    // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
-
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
 
-void ImGuiLayer::OnImGuiRender()
-{
+void ImGuiLayer::OnImGuiRender() {
     static bool show = true;
     ImGui::ShowDemoWindow(&show);
 }

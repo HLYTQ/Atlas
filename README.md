@@ -40,3 +40,42 @@ UserData字段是C API中一个相当常见的范例，它允许用户从回调�
 	m_ImGuiLayer->End();
 ```
 同样继承至`Layer`，虚表可以自动区分出一个实例是否具有`OnUpdate`函数或者是`OnImGuiRender`。
+
+## 四元数相机处理天空盒问题
+
+(1) 天空盒的 View 矩阵需要移除平移部分
+天空盒通常位于无限远处，因此 相机的平移（位置）不应影响天空盒的渲染。
+
+错误做法：直接使用普通相机的 View 矩阵（包含平移）。
+
+正确做法：移除 View 矩阵中的平移分量，只保留旋转（四元数的旋转部分）。
+
+(2) 四元数到 View 矩阵的转换可能有误
+四元数相机的 View 矩阵需要通过四元数的 共轭（conjugate） 表示相机朝向的逆旋转。
+
+2. 修复步骤
+(1) 构造正确的 View 矩阵（C++ 端）
+在传递 ViewProjection 矩阵给着色器之前，确保 View 矩阵仅包含旋转（移除平移）：
+
+cpp
+// 假设：
+// - orientation 是四元数表示的相机旋转
+// - projection 是投影矩阵
+glm::mat4 view = glm::mat4_cast(glm::conjugate(orientation)); // 关键：共轭四元数 + 移除平移
+glm::mat4 viewProjection = projection * view;
+或者（如果仍想保留 lookAt 风格）：
+
+cpp
+glm::vec3 forward = orientation * glm::vec3(0, 0, -1); // 四元数旋转前向
+glm::mat4 view = glm::lookAt(glm::vec3(0), forward, glm::vec3(0, 1, 0)); // 相机位置设为 (0,0,0)
+glm::mat4 viewProjection = projection * view;
+
+## 后续计划
+
+1. 天空盒映射
+2. 天空盒选择，ImGui::Combo
+3. 物理材质
+4. ImGui::Plotting Lines动画显示帧率
+5. 显卡，opengl信息窗口
+6. 【可选】地板
+7. 控制台输出log

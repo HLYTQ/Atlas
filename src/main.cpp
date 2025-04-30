@@ -1,28 +1,24 @@
 #include "Atlas.hpp"
-#include "Atlas/Layer.hpp"
-#include "Atlas/ImGui/ImGuiLayer.hpp"
+#include "Example.hpp"
 
-class ExampleLayer : public Atlas::Layer {
-public:
-    ExampleLayer() : Layer("ExampleLayer") {}
+namespace Atlas {
 
-    void OnUpdate() override {
-        AT_INFO("ExampleLayer Update!");
-    }
-    void OnEvent(Atlas::Event& e) override {
-        AT_TRACE(e.ToString());
-    }
+    class Atlasnut : public Application {
+    public:
+        Atlasnut() : Application() {
+            PushLayer(new ExampleLayer());
+        }
 
-};
+        ~Atlasnut() override = default;
+    };
+}
 
-int main(void) {
-    Atlas::Application app;
+int main() {
     Atlas::Log::init();
     AT_CORE_WARN("Initlized Log");
     AT_INFO("Hello");
 
-    auto app = new Atlas::Application();
-    app->PushLayer(new Atlas::ImGuiLayer());
+    auto app = new Atlas::Atlasnut();
     app->Run();
     delete app;
 }

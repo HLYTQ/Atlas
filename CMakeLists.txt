@@ -34,9 +34,14 @@ endif()
 if (MSVC)
     # FUCKING VS2022
     include_directories(${PROJECT_SOURCE_DIR}/vendor/glfw/include)
+    include_directories(${PROJECT_SOURCE_DIR}/vendor/assimp/include)
+    include_directories(${CMAKE_BINARY_DIR}/vendor/assimp/include)
+    include_directories(${PROJECT_SOURCE_DIR}/vendor/imgui)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/source-charset:utf-8>")
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/execution-charset:utf-8>")
 endif()
+
+add_definitions(-DAT_CURRENT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.hpp)
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS include/*.h include/*.hpp)
@@ -45,6 +50,7 @@ add_executable(${PROJECT_NAME} ${sources} ${headers})
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/stb_image)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/spdlog/include)
+include_directories(${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
 
 add_subdirectory(${VENDOR_DIR}/glm)
 target_link_libraries(${PROJECT_NAME} PUBLIC glm)
@@ -57,5 +63,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glad)
 
 add_subdirectory(${VENDOR_DIR}/imgui)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+
+add_subdirectory(${VENDOR_DIR}/ImGuiFileDialog)
+target_link_libraries(${PROJECT_NAME} PUBLIC ImGuiFileDialog)
+
+add_subdirectory(${VENDOR_DIR}/assimp)
+target_link_libraries(${PROJECT_NAME} PUBLIC assimp)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DOPENGLTUTOR_HOME=\"${CMAKE_CURRENT_SOURCE_DIR}/\")

@@ -3,8 +3,8 @@
 #include "Atlas/Events/ApplicationEvent.hpp"
 #include "Atlas/Events/KeyEvent.hpp"
 #include "Atlas/Events/MouseEvent.hpp"
+#include "Atlas/Events/DropEvent.hpp"
 #include "Atlas/Log.hpp"
-#include "Core.hpp"
 
 namespace Atlas {
 
@@ -29,27 +29,35 @@ void OpenGLWindow::Init(const WindowProps& props) {
 
     AT_CORE_TRACE("Creating window: {0} ({1} , {2})", props.Title, props.Width, props.Height);
 
+    
     if (!s_GLFWInitialized) {
         // NOTE: glfwTerminate on system shutdown
         if (!glfwInit()) {
             glfwSetErrorCallback([](int error, const char* description){
-                AT_CORE_ERROR("Could not intialize GLFW!");
-                assert(true);
+                AT_CORE_ASSERT(true, "Could not intialize GLFW!");
             });
         }
 
         s_GLFWInitialized = true;
     }
+
     m_Window = glfwCreateWindow((int) props.Width, (int) props.Height, m_Data.Title.c_str(), nullptr, nullptr);
     glfwMakeContextCurrent(m_Window);
 
     int version_glad = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     if (version_glad == 0) {
-        AT_CORE_ERROR("ERROR: Failed to initialize OpenGL context.\n");
-        assert(true);
+        AT_CORE_ASSERT(true, "ERROR: Failed to initialize OpenGL context.\n");
     }
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
+
+    // glEnable(GL_CULL_FACE); // ÃæÌÞ³ý
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
+
     SetVSync(true);
 
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
@@ -106,6 +114,12 @@ void OpenGLWindow::Init(const WindowProps& props) {
                 break;
             }
         }
+    });
+    glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
+        WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
+
+        MouseScrolledEvent event((float) xOffset, (float) yOffset);
+        data.EventCallback(event);
     });
     glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
         WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);

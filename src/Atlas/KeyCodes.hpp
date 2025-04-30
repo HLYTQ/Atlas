@@ -142,6 +142,9 @@ enum : KeyCode {
     RightSuper   = 347,
     Menu         = 348
 };
+
+} // namespace Key
+
 namespace Mouse {
 
 enum : MouseCode {
@@ -160,8 +163,7 @@ enum : MouseCode {
     ButtonRight  = Button1,
     ButtonMiddle = Button2
 };
-}
 
-} // namespace Key
+}
 
 } // namespace Atlas

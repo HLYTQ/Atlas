@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cstdint>
-
-#include "Core.hpp"
+#include "atlaspch.hpp"
 #include "Atlas/Events/Event.hpp"
 #include "OpenGL/OpenGLWindow.hpp"
 
@@ -11,6 +9,7 @@ namespace Atlas {
 struct WindowProps {
     WindowProps(const std::string& title = "Atlas Engine", uint32_t width = 1280, uint32_t height = 720)
         : Title(title), Width(width), Height(height) {}
+
 public:
     std::string Title;
     uint32_t Width;
@@ -25,7 +24,7 @@ public:
     virtual ~Window() = default;
 
     static Scope<Window> Create(const WindowProps& props = WindowProps());
-    
+
     virtual void OnUpdate() = 0;
 
     virtual uint32_t GetWidth() const  = 0;
